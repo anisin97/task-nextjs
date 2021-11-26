@@ -1,8 +1,9 @@
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
+import axios from 'axios';
 
-export default function Home() {
+export default function Home({posts}) {
   return (
     <div className={styles.container}>
       <Head>
@@ -12,43 +13,26 @@ export default function Home() {
       </Head>
 
       <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js!</a>
-        </h1>
-
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>pages/index.js</code>
-        </p>
+        <h3 className={styles.title}>
+          Your Profile!
+        </h3>
 
         <div className={styles.grid}>
-          <a href="https://nextjs.org/docs" className={styles.card}>
-            <h2>Documentation &rarr;</h2>
-            <p>Find in-depth information about Next.js features and API.</p>
-          </a>
-
-          <a href="https://nextjs.org/learn" className={styles.card}>
-            <h2>Learn &rarr;</h2>
-            <p>Learn about Next.js in an interactive course with quizzes!</p>
-          </a>
-
-          <a
-            href="https://github.com/vercel/next.js/tree/master/examples"
-            className={styles.card}
-          >
-            <h2>Examples &rarr;</h2>
-            <p>Discover and deploy boilerplate example Next.js projects.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-          >
-            <h2>Deploy &rarr;</h2>
-            <p>
-              Instantly deploy your Next.js site to a public URL with Vercel.
-            </p>
-          </a>
+          <div href="https://nextjs.org/docs" className={styles.card}>
+            <Image
+            src={posts.data.profile.profile_picture_url}
+            alt="Profile Picture"
+            width={300}
+            height={300}
+            />
+            <h4>{posts.data.profile.biography}</h4>
+            <h4>Followers: </h4>
+            <p>{posts.data.profile.followers_count}</p>
+            <h4>Media-Count: </h4>
+            <p>{posts.data.profile.media_count}</p>
+            <h4>Username: </h4>
+            <p>{posts.data.profile.username}</p>
+          </div>
         </div>
       </main>
 
@@ -66,4 +50,19 @@ export default function Home() {
       </footer>
     </div>
   )
+}
+
+export async function getStaticProps(){
+  const data = {
+    "platform":"Instagram",
+    "username":"iamcloud.dev"
+  };
+  const headers = {
+      "Authorization": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MTM2MjgzYzEzMWU5YTY0NzMzNmRmZmMiLCJ1aWQiOm51bGwsInVzZXJUeXBlIjoiQ29tcGFueSIsInJvbGUiOiJBZG1pbiIsImlhdCI6MTYzNzIzMTM0Mn0.l9HHPRoREy_QNrjDg4oY91Y598yTSJS1kFCfGuWyQaw",
+      "Content-Type": "application/json",
+  };
+  const posts = await axios.post("http://3.7.226.212/admin/discover/search-influencer", data, {headers});
+  return {
+    props: { posts: posts.data }
+  }
 }
