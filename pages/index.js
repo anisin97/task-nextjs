@@ -1,9 +1,16 @@
 import Head from 'next/head'
 import Image from 'next/image'
+import Link from 'next/link';
+import React, { useState ,useEffect} from 'react';
 import styles from '../styles/Home.module.css'
 import axios from 'axios';
 
-export default function Home({posts}) {
+export default function Home({ posts }) {
+  const [query, setQuery] = useState("");
+  const [check, setCheck] = useState("");
+  const data = posts.data;
+
+
   return (
     <div className={styles.container}>
       <Head>
@@ -16,24 +23,39 @@ export default function Home({posts}) {
         <h3 className={styles.title}>
           Your Profile!
         </h3>
-
-        <div className={styles.grid}>
-          <div href="https://nextjs.org/docs" className={styles.card}>
-            <Image
-            src={posts.data.profile.profile_picture_url}
-            alt="Profile Picture"
-            width={300}
-            height={300}
-            />
-            <h4>{posts.data.profile.biography}</h4>
-            <h4>Followers: </h4>
-            <p>{posts.data.profile.followers_count}</p>
-            <h4>Media-Count: </h4>
-            <p>{posts.data.profile.media_count}</p>
-            <h4>Username: </h4>
-            <p>{posts.data.profile.username}</p>
+          <div className={styles.grid}>
+            <form>
+              <input type="text" id="user" placeholder="Username"
+                value={query} onChange={(event) => setQuery(event.target.value)}/>
+              <input type="submit" value="Search" onClick={(event) => {
+                event.preventDefault();
+                setCheck(query)}}/>
+            </form>
+            {(posts.data.profile.username.includes(check)) ?
+              <div href="https://nextjs.org/docs" className={styles.card} >
+                <Image
+                src={posts.data.profile.profile_picture_url}
+                alt="Profile Picture"
+                width={300}
+                height={300}
+              />
+              <h4>{posts.data.profile.biography}</h4>
+              <h4>Followers: </h4>
+              <p>{posts.data.profile.followers_count}</p>
+              <h4>Media-Count: </h4>
+              <p>{posts.data.profile.media_count}</p>
+              <h4>Username: </h4>
+              <p>{posts.data.profile.username}</p>
+              <p>
+                <Link href="/posts/content">
+                  <a>Go to the Content.</a>
+                </Link>
+              </p>
+              </div>
+              :  <div><p>Username not found!</p></div>
+            }
           </div>
-        </div>
+
       </main>
 
       <footer className={styles.footer}>
